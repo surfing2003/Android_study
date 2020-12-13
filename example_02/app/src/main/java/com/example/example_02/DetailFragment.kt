@@ -8,8 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 
-
-class ListFragment : Fragment() {
+class DetailFragment : Fragment() {
     var mainActivity: MainActivity? = null
 
     override fun onAttach(context: Context) {
@@ -27,12 +26,9 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
-        view.findViewById<Button>(R.id.btnNext).setOnClickListener { mainActivity?.goDetail() }
+        val view = inflater.inflate(R.layout.fragment_detail, container, false)
+        view.findViewById<Button>(R.id.btnBack).setOnClickListener { mainActivity?.goBack() }
         return view
     }
-
-
-
 
 }

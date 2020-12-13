@@ -9,17 +9,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        setFragment()
+        setFragment()
     }
-//
-//    fun setFragment() {
-//        val listFragment = ListFragment()
-//        val transaction = supportFragmentManager.beginTransaction()
-//
-//
-//        transaction.add(R.id.frameLayout,listFragment)
-//        transaction.commit()
-//
-//    }
+
+    fun setFragment() {
+        val listFragment = ListFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+
+        transaction.add(R.id.frameLayout,listFragment)
+        transaction.commit()
+    }
+
+    fun goDetail(){
+        val detailFragment = DetailFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.frameLayout,detailFragment)
+        transaction.addToBackStack("detail")
+        transaction.commit()
+    }
+
+    fun goBack(){
+        onBackPressed()
+    }
 }
 
