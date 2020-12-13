@@ -9,17 +9,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setFragment()
+//        setFragment()
     }
-
-    fun setFragment() {
-        val listFragment = ListFragment()
-        val transaction = supportFragmentManager.beginTransaction()
-
-
-        transaction.add(R.id.frameLayout,listFragment)
-        transaction.commit()
-
-    }
+//
+//    fun setFragment() {
+//        val listFragment = ListFragment()
+//        val transaction = supportFragmentManager.beginTransaction()
+//
+//
+//        transaction.add(R.id.frameLayout,listFragment)
+//        transaction.commit()
+//
+//    }
 }
 
