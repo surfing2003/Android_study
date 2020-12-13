@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 
@@ -28,6 +29,13 @@ class CustomAdapter: RecyclerView.Adapter<Holder>() {
 }
 
 class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    init {
+        itemView.setOnClickListener{
+            Toast.makeText(itemView?.context, "클릭된 아이템 = ${itemView.findViewById<TextView>(R.id.Title).text}",Toast.LENGTH_LONG).show()
+        }
+    }
+
+
     fun setMemo(memo: Memo){
         itemView.findViewById<TextView>(R.id.textNo).text = "${memo.no}"
         itemView.findViewById<TextView>(R.id.Title).text = memo.title
