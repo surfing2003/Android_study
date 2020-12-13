@@ -35,7 +35,6 @@ class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
         }
     }
 
-
     fun setMemo(memo: Memo){
         itemView.findViewById<TextView>(R.id.textNo).text = "${memo.no}"
         itemView.findViewById<TextView>(R.id.Title).text = memo.title
