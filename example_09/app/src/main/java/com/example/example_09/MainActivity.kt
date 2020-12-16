@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
         val helper = SqliteHelper(this, "memo", 1)
         val adapter = RecyclerAdapter()
+        adapter.helper = helper
         adapter.listData.addAll(helper.selectMemo())
 
         val recyclerMemo = findViewById<RecyclerView>(R.id.recyclerMemo)
