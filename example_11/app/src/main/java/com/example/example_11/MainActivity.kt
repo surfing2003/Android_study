@@ -2,18 +2,23 @@ package com.example.example_11
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
     val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
@@ -38,12 +43,58 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.buttonCamera).setOnClickListener {
             openCamera()
         }
+        findViewById<Button>(R.id.buttonGallery).setOnClickListener {
+            openGallery()
+        }
     }
+
     fun openCamera(){
         if (checkPermission(CAMERA_PERMISSION,FLAG_PERM_CAMERA)){
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent,FLAG_REQ_CAMERA)
         }
+    }
+
+    fun openGallery(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
+        startActivityForResult(intent,FLAG_REQ_STORAGE)
+    }
+
+    fun saveImageFile(filename: String, mimeType: String, bitmap: Bitmap): Uri?{
+        var values = ContentValues()
+        values.put(MediaStore.Images.Media.DISPLAY_NAME,filename)
+        values.put(MediaStore.Images.Media.MIME_TYPE,mimeType)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            values.put(MediaStore.Images.Media.IS_PENDING, 1)
+        }
+
+        val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values)
+        try{
+            if(uri != null){
+                var descriptor = contentResolver.openFileDescriptor(uri, "w")
+                if (descriptor != null){
+                    val fos = FileOutputStream(descriptor.fileDescriptor)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos)
+                    fos.close()
+                }
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                    values.clear()
+                    values.put(MediaStore.Images.Media.IS_PENDING,0)
+                    contentResolver.update(uri,values,null,null)
+                }
+            }
+        } catch(e: java.lang.Exception){
+            Log.e("File","error = ${e.localizedMessage}")
+        }
+        return uri
+    }
+
+    fun newFileName(): String{
+        val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
+        val filename = "Image" + sdf.format(System.currentTimeMillis())
+        return "$filename.jpg"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,12 +104,19 @@ class MainActivity : AppCompatActivity() {
                 FLAG_REQ_CAMERA -> {
                     if(data?.extras?.get("data") != null){
                         val bitmap = data?.extras?.get("data") as Bitmap
-                        findViewById<ImageView>(R.id.imagePreview).setImageBitmap(bitmap)
+                        val uri = saveImageFile(newFileName(),"image/jpg",bitmap)
+                        findViewById<ImageView>(R.id.imagePreview).setImageURI(uri)
+
                     }
+                }
+                FLAG_REQ_STORAGE -> {
+                    val uri = data?.data
+                    findViewById<ImageView>(R.id.imagePreview).setImageURI(uri)
                 }
             }
         }
     }
+
 
     fun checkPermission(permissions: Array<out String>, flag: Int): Boolean{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
