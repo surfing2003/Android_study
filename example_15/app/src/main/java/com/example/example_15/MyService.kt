@@ -2,8 +2,10 @@ package com.example.example_15
 
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+
 
 class MyService : Service() {
 
@@ -24,7 +26,20 @@ class MyService : Service() {
         super.onDestroy()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    inner class MyBinder : Binder(){
+        fun getService(): MyService{
+            return this@MyService
+        }
     }
+
+    val binder = MyBinder()
+    override fun onBind(intent: Intent?): IBinder? {
+        return binder
+    }
+
+    fun serviceMessage(): String{
+        return "Hello Activity! I am Service!"
+    }
+
+
 }
