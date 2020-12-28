@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                         val bitmap = data?.extras?.get("data") as Bitmap
                         val uri = saveImageFile(newFileName(),"image/jpg",bitmap)
                         findViewById<ImageView>(R.id.imagePreview).setImageURI(uri)
-
                     }
                 }
                 FLAG_REQ_STORAGE -> {
